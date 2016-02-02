@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>The Doughnut Shop</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+    <script src="js/jquery.app.js"></script>
+
+  </head>
+  <body>
+    <h1>Doughnut Shop</h1>
+    <form id="new-doughnut">
+      <input type="text" name='doughnut[flavor]' id="new-doughnut-flavor" placeholder="What type of doughnut?" value="Chocolate">
+      <select name="doughnut[style]" id="new-doughnut-style">
+        <option value="Old Fashioned">Old Fashioned</option>
+        <option value="Cake">Cake</option>
+        <option value="French Cruller">French Cruller</option>
+        <option value="Fritter">Fritter</option>
+        <option value="Cream">Cream</option>
+        <option value="Jelly">Jelly</option>
+        <option value="Cruller">Cruller</option>
+        <option value="Glazed">Glazed</option>
+        <option value="Yeast">Yeast</option>
+      </select>
+      <input type="submit" value='Save My Doughnut'>
+    </form>
+    <ul id="doughnuts">
+    </ul>
+
+    <div class="modal fade" id="edit-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Edit Doughnuts</h4>
+          </div>
+          <div class="modal-body">
+            <form id="edit-doughnut">
+              <input type="text" name='doughnut[flavor]' id="edit-doughnut-flavor" placeholder="What type of doughnut?" value="Chocolate">
+              <select name="doughnut[style]" id="edit-doughnut-style">
+                <option value="Old Fashioned">Old Fashioned</option>
+                <option value="Cake">Cake</option>
+                <option value="French Cruller">French Cruller</option>
+                <option value="Fritter">Fritter</option>
+                <option value="Cream">Cream</option>
+                <option value="Jelly">Jelly</option>
+                <option value="Cruller">Cruller</option>
+                <option value="Glazed">Glazed</option>
+                <option value="Yeast">Yeast</option>
+              </select>
+              <input type="submit" value='Save My Doughnut'>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
