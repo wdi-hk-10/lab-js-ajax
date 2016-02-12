@@ -1,143 +1,130 @@
 // Your solution here
+$(document).ready(function () {
+  // utility
+  var createNewLi = function (id, flavor, style) {
+    var newLi = '' +
+      '<li data-id="' + id + '" data-flavor="' + flavor + '" data-style="' +  style + '">' +
+        flavor + ' - ' +
+        '<em>' + style + '</em> -' +
+        '<button class="edit btn btn-warning">edit</button>' +
+        '<button class="delete btn btn-danger">delete</button>' +
+      '</li>';
 
-$(document).ready(function(){
+    $('#doughnuts').append(newLi);
+  };
 
-  // GET ALL OR ONE
-  // $.ajax({
-  //   url: "http://api.doughnuts.ga/doughnuts/1",
-  //   method: "GET",
-  //   success: function(response, status) {
-  //     console.log(response);
-  //     console.log(status);
-  //   },
-  //   error: function(response, status) {
-  //     console.log(response);
-  //     console.log(status);
-  //   }
-  // });
+  // Main
+  var deleteDonut = function (elem) {
+    var id = $(elem).parent().data("id");
 
-
-  //Start!!
-
-  var idCounter = 0
-
-  $.ajax({
-    url: "http://api.doughnuts.ga/doughnuts/",
-    method: "GET",
-    success: function(response, status) {
-      response.forEach(function (elem, index){
-        var newRow = '<li data-id="' + elem.id + '">'+elem.flavor+' - <i>'+elem.style+'</i> - <button type="button" class="btn btn-warning">edit</button><button type="button" class="btn btn-danger">delete</button></li>';
-        $('#doughnuts').prepend(newRow);
-      })
-      editButton();
-      deleteButton();
-    },
-    error: function(response, status) {
-
-    }
-  });
-
-//'Save my doughnut'
-$('#new-doughnut').off().on('submit', function(e){
-  e.preventDefault();
-  $.ajax({
-    url: "http://api.doughnuts.ga/doughnuts/",
-    method: "POST",
-    success: function(response, status) {
-      response.flavor = $('input').eq(0).val();
-      response.style = $('#new-doughnut-style').val();
-      var saveIt = '<li data-id='+(parseInt(response.id)+idCounter)+'>'+response.flavor+' - <i>'+response.style+'</i> - <button type="button" class="btn btn-warning">edit</button><button type="button" class="btn btn-danger">delete</button></li>'
-      $('#doughnuts').prepend(saveIt);
-      editButton();
-      deleteButton();
-      idCounter++;
-    },
-    error: function(response, status) {
-    }
-  })
-})
-
-
-
-// Click edit button
-var editButton = function(){
-  $('.btn-warning').each(function (index, elem) {
-    $(this).off().on('click', function(e){
-      // e.preventDefault();
-      $('#edit-modal').modal('show');
-      console.log($(this).parent().data('flavor'))
-      var currentStyle;
-      var currentFlavor;
-
-      $('#edit-doughnut-style').val(currentStyle);
-      $('#edit-doughnut-flavor').val(currentFlavor);
-      $('input').eq(3).removeAttr('data-id');
-      $('input').eq(3).data().id = index
-      saveEditButton();
-    })
-  })
-};
-
-// Click save button in Edit Doughnuts
-var saveEditButton = function() {
-  $('input').eq(3).off().on('click', function(e){
-    e.preventDefault();
-    var check = $('.btn-warning').length - $('input').eq(3).data().id;
-    console.log (check)
     $.ajax({
-      url: "http://api.doughnuts.ga/doughnuts/"+check,
-      method: "PUT",
-      success: function(response, status) {
-        response.style = $('#edit-doughnut-style').val();
-        response.flavor = $('#edit-doughnut-flavor').val();
-        console.log (response)
-        var updateIt = response.flavor+' - <i>'+response.style+'</i> - <button type="button" class="btn btn-warning">edit</button><button type="button" class="btn btn-danger">delete</button>'
-        $('li[data-id="'+response.id+'"]').html(updateIt);
-        editButton();
-        deleteButton();
+      url: "http://127.0.0.1:3000/doughnuts/" + id,
+      method: "DELETE",
+      success: function (response, status) {
+        console.log(response);
+        $(elem).parent().remove();
+      },
+      error: function (response, status) {
+        console.log(response);
       }
+    });
+  };
+  //
+  var bindButtons = function () {
+    $('.edit').off().on("click", function (e) {
+      e.preventDefault();
+      $('#edit-modal').modal('show');
 
-    })
-    $('#edit-modal').modal('hide');
-  })
+      var id     = $(this).parent().data('id');
+      var flavor = $(this).parent().data('flavor');
+      var style  = $(this).parent().data('style');
 
+      $('#edit-doughnut').data("id", id);
+      $('#edit-doughnut-flavor').val(flavor);
+      $('#edit-doughnut-style').val(style);
+    });
 
+    $('.delete').off().on("click", function (e) {
+      e.preventDefault();
+      deleteDonut(this);
+    });
+  };
 
+  var getAllDonuts = function () {
+    $.ajax({
+      url: "http://127.0.0.1:3000/doughnuts",
+      method: "GET",
+      success: function (response, status) {
+        response.forEach(function (elem) {
+          createNewLi(elem._id, elem.flavor, elem.style);
+        });
+        bindButtons();
+      },
+      error: function (response, status) {
+        console.log(response);
+      }
+    });
+  };
 
-}
+  var bindCreateButton = function () {
+    $('#new-doughnut').on('submit', function (e) {
+      e.preventDefault();
 
+      var flavor = $('#new-doughnut-flavor').val();
+      var style = $('#new-doughnut-style').val();
 
-// Delete button
-var deleteButton = function() {
-  $('.btn-danger').each(function (index, elem) {
-    $(this).off().on('click', function(e){
-      //e.preventDefault();
-      console.log('deleting');
-      console.log(index)
       $.ajax({
-        url: "http://api.doughnuts.ga/doughnuts/"+(index+1),
-        method: "DELETE",
-        success: function(response, status) {
+        url: "http://127.0.0.1:3000/doughnuts",
+        method: "POST",
+        data: {
+          flavor: flavor,
+          style: style
+        },
+        success: function (response, status) {
+          createNewLi(response._id, response.flavor, response.style);
+          bindButtons();
+        },
+        error: function (response, status) {
+          console.log(response);
         }
+      });
+    });
+  };
 
-      })
-      $(this).parent().remove();
-    })
-  })
-}
+  var bindUpdateDonut = function () {
+    $('#edit-doughnut').on("submit", function (e) {
+      e.preventDefault();
 
-// $(elem).parent().data().id
+      var id = $(this).data("id");
+      var flavor = $('#edit-doughnut-flavor').val();
+      var style = $('#edit-doughnut-style').val();
 
+      $.ajax({
+        url: "http://127.0.0.1:3000/doughnuts/" + id,
+        method: "PUT",
+        data: {
+          flavor: flavor,
+          style: style
+        },
+        success: function (response, status) {
+          console.log(response);
+          $('li[data-id="' + id + '"]').remove();
+          createNewLi(id, flavor, style);
+          bindButtons();
+          $('#edit-modal').modal('hide');
+        },
+        error: function (response, status) {
+          console.log(response);
+        }
+      });
+    });
+  };
 
-  // $.ajax({
-  //   url: "http://api.doughnuts.ga/doughnuts/" + $(this).parent().data().id,
-  //   method: "PUT",
-  //   success: function(response, status) {
-  //     $('#edit-modal').modal('show');
-  //     $('input').eq(3).removeAttr('data-id');
-  //     $('input').eq(3).attr('data-id', response.id);
-  //   }
-  // })
+  var init = function () {
+    getAllDonuts();
+    bindCreateButton();
+    bindUpdateDonut();
+  };
 
-
-})
+  init();
+});
