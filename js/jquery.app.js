@@ -18,7 +18,7 @@ $(document).ready(function () {
     var id = $(elem).parent().data("id");
 
     $.ajax({
-      url: "http://api.doughnuts.ga/doughnuts/" + id,
+      url: "http://127.0.0.1:8000/doughnuts/" + id,
       method: "DELETE",
       success: function (response, status) {
         console.log(response);
@@ -52,11 +52,11 @@ $(document).ready(function () {
 
   var getAllDonuts = function () {
     $.ajax({
-      url: "http://api.doughnuts.ga/doughnuts",
+      url: "http://127.0.0.1:8000/doughnuts",
       method: "GET",
       success: function (response, status) {
         response.forEach(function (elem) {
-          createNewLi(elem.id, elem.flavor, elem.style);
+          createNewLi(elem._id, elem.flavor, elem.style);
         });
         bindButtons();
       },
@@ -74,14 +74,14 @@ $(document).ready(function () {
       var style = $('#new-doughnut-style').val();
 
       $.ajax({
-        url: "http://api.doughnuts.ga/doughnuts",
+        url: "http://127.0.0.1:8000/doughnuts",
         method: "POST",
         data: {
           flavor: flavor,
           style: style
         },
         success: function (response, status) {
-          createNewLi(response.id, response.flavor, response.style);
+          createNewLi(response._id, response.flavor, response.style);
           bindButtons();
         },
         error: function (response, status) {
@@ -100,7 +100,7 @@ $(document).ready(function () {
       var style = $('#edit-doughnut-style').val();
 
       $.ajax({
-        url: "http://api.doughnuts.ga/doughnuts/" + id,
+        url: "http://127.0.0.1:8000/doughnuts/" + id,
         method: "PUT",
         data: {
           flavor: flavor,
@@ -109,7 +109,7 @@ $(document).ready(function () {
         success: function (response, status) {
           console.log(response);
           $('li[data-id="' + id + '"]').remove();
-          createNewLi(id, response.flavor, response.style);
+          createNewLi(id, flavor, style);
           bindButtons();
           $('#edit-modal').modal('hide');
         },
